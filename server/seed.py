@@ -13,10 +13,10 @@ if __name__ == '__main__':
         print("Seeding powers...")
         # Seed powers (description only, no name field as per the original model)
         powers = [
-            Power(description="Gives the wielder super-human strength."),
-            Power(description="Gives the wielder the ability to fly at supersonic speed."),
-            Power(description="Allows the wielder to use their senses at a super-human level."),
-            Power(description="Can stretch the human body to extreme lengths."),
+            Power(name="super strength", description="gives the wielder super-human strengths"),
+            Power(name="flight", description="gives the wielder the ability to fly through the skies at supersonic speed"),
+            Power(name="super human senses", description="allows the wielder to use her senses at a super-human level"),
+            Power(name="elasticity", description="can stretch the human body to extreme lengths"),
         ]
         db.session.add_all(powers)
 

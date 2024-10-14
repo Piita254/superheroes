@@ -1,4 +1,4 @@
-from flask import Flask,jsonify,request
+from flask import Flask,jsonify,request,make_response
 from flask_migrate import Migrate
 
 from models import db, SuperHero, Power, Hero
@@ -13,7 +13,9 @@ app.json.compact = False
 db.init_app(app)
 
 migrate = Migrate(app, db)
-
+@app.route('/')
+def home():
+    return '<h1> This is my home page </h1>'
 # GET /heroes - List all heroes
 @app.route('/heroes', methods=['GET'])
 def get_heroes():
@@ -42,19 +44,38 @@ def get_hero_by_id(id):
     return jsonify({"error": "Hero not found"}), 404
 
 # GET /powers - List all powers
+
 @app.route('/powers', methods=['GET'])
 def get_powers():
-    powers = Power.query.all()
-    return jsonify([power.to_dict(only=('id', 'name', 'description')) for power in powers])
+    powers = Power.query.all()  
+
+    powers_list = []
+    
+    for power in powers:
+        power_dict = {
+            "description": power.description,
+            "id": power.id,
+            "name": power.name
+        }
+        powers_list.append(power_dict)
+
+    return (powers_list), 200
 
 # GET /powers/:id - Get power by ID
 @app.route('/powers/<int:id>', methods=['GET'])
 def get_power_by_id(id):
     power = Power.query.get(id)
-    if power:
-        return jsonify(power.to_dict(only=('id', 'name', 'description')))
-    return jsonify({"error": "Power not found"}), 404
 
+    if power is None:
+        return make_response({"error": "Power not found"}, 404)
+
+    power_dict = {
+        "id": power.id,
+        "name": power.name,
+        "description": power.description
+    }
+
+    return (power_dict), 200
 # PATCH /powers/:id - Update power description
 @app.route('/powers/<int:id>', methods=['PATCH'])
 def update_power(id):
